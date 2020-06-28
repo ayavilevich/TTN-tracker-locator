@@ -6,18 +6,24 @@
     "@testing-library/jest-dom": "^4.2.4",
     "@testing-library/react": "^9.5.0",
     "@testing-library/user-event": "^7.2.1",
+    "antd": "^4.3.5",
+    "google-maps-react": "^2.0.6",
+    "hashget": "^1.0.1",
+    "mapbox-gl": "^1.11.0",
     "react": "^16.13.1",
     "react-dom": "^16.13.1",
+    "react-mapbox-gl": "^4.8.6",
     "react-scripts": "3.4.1"
   },
   "scripts": {
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
-    "eject": "react-scripts eject"
+    "eject": "react-scripts eject",
+    "lint": "eslint -- ./src/."
   },
-  "eslintConfig": {
-    "extends": "react-app"
+  "_eslintConfig": {
+    "extends": "_react-app"
   },
   "browserslist": {
     "production": [
@@ -30,5 +36,15 @@
       "last 1 firefox version",
       "last 1 safari version"
     ]
+  },
+  "//": [
+    "https://medium.com/@pppped/extend-create-react-app-with-airbnbs-eslint-config-prettier-flow-and-react-testing-library-96627e9a9672"
+  ],
+  "devDependencies": {
+    "eslint-config-airbnb": "^18.2.0",
+    "eslint-config-prettier": "^6.11.0",
+    "eslint-plugin-jsx-a11y": "^6.3.1",
+    "eslint-plugin-prettier": "^3.1.4",
+    "prettier": "^2.0.5"
   }
 }

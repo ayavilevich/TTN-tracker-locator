@@ -1,3 +1,11 @@
+# TTN Tracker Locator
+
+Work in progress.
+
+This is an HTML5 app that shows you where a GPS tracker is located relative to your location. The information about the tracker is pulled form the TTN (The Things Network) LoRaWan system.
+
+# React generator notes
+
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
 ## Available Scripts
