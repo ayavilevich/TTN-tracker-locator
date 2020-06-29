@@ -4,7 +4,6 @@ import 'antd/dist/antd.css';
 import { ReloadOutlined, SettingOutlined } from '@ant-design/icons';
 import { HashGet } from 'hashget'
 
-// import logo from './logo.svg';
 import Locator from './components/Locator';
 import Settings from './components/Settings';
 import SettingsProvider from './lib/Settings';
