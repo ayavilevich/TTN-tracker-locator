@@ -1,17 +1,33 @@
 import React from 'react';
-import { Button, Popover } from 'antd';
+import styled from 'styled-components';
+import { Button, Popover, notification } from 'antd';
 import 'antd/dist/antd.css';
 import { ReloadOutlined, SettingOutlined } from '@ant-design/icons';
 import { HashGet } from 'hashget'
 
-import Locator from './components/Locator';
-import Settings from './components/Settings';
+import Locator from './components/organisms/Locator';
+import Settings from './components/organisms/Settings';
 import SettingsProvider from './lib/Settings';
-import './App.css';
+import GLOBAL_CONSTANTS from './lib/Constants';
+// import './App.css';
 
 const CONSTANTS = {
 	SETTINGS_HASH_PARAM: 'settings',
 };
+
+const AppContainer = styled.div`
+	text-align: center;
+	background-color: #282c34;
+	min-height: 100vh;
+	font-size: calc(10px + 2vmin);
+	color: white;
+`;
+const Navigation = styled.nav`
+	text-align: center;
+	position: absolute;
+	z-index: 100;
+	width: 100%;
+`;
 
 class App extends React.Component {
 	constructor(props) {
@@ -24,19 +40,24 @@ class App extends React.Component {
 			SettingsProvider.deserialize(decodeURIComponent(serializedSettings));
 		}
 		// init state
+		// parse format for some settings
+		const maxPointsToRenderOnMap = SettingsProvider.getMaxPointsToRenderOnMap()
 		this.state = {
 			loadingData: false,
 			settingsVisible: false,
+			// persistent settings
 			googleApiKey: SettingsProvider.getGoogleApiKey(),
 			mapBoxAccessToken: SettingsProvider.getMapBoxAccessToken(),
+			dataSource: SettingsProvider.getDataSource(),
+			customDataUrl: SettingsProvider.getCustomDataUrl(),
+			ttnApplicationId: SettingsProvider.getTtnApplicationId(),
+			ttnDeviceId: SettingsProvider.getTtnDeviceId(),
+			ttnAccessKey: SettingsProvider.getTtnAccessKey(),
+			ttnCorsProxyUrl: SettingsProvider.getTtnCorsProxyUrl(),
+			ttnQueryLast: SettingsProvider.getTtnQueryLast(),
+			maxPointsToRenderOnMap: maxPointsToRenderOnMap !== undefined ? parseInt(maxPointsToRenderOnMap, 10) : maxPointsToRenderOnMap,
 		};
 	}
-
-	handleLoadData = () => {
-		console.log('handle');
-		this.setState({ loadingData: true });
-		setTimeout(() => { this.setState({ loadingData: false }); }, 5000);
-	};
 
 	handleSettingsFinish = (values) => {
 		const { googleApiKey } = this.state;
@@ -52,6 +73,14 @@ class App extends React.Component {
 		// save values
 		SettingsProvider.setGoogleApiKey(values.googleApiKey);
 		SettingsProvider.setMapBoxAccessToken(values.mapBoxAccessToken);
+		SettingsProvider.setDataSource(values.dataSource);
+		SettingsProvider.setCustomDataUrl(values.customDataUrl);
+		SettingsProvider.setTtnApplicationId(values.ttnApplicationId);
+		SettingsProvider.setTtnDeviceId(values.ttnDeviceId);
+		SettingsProvider.setTtnAccessKey(values.ttnAccessKey);
+		SettingsProvider.setTtnCorsProxyUrl(values.ttnCorsProxyUrl);
+		SettingsProvider.setTtnQueryLast(values.ttnQueryLast);
+		SettingsProvider.setMaxPointsToRenderOnMap(values.maxPointsToRenderOnMap);
 
 		// special case, check for google api key change
 		// Google API key change requires a reload because the key is part of a JS url that is added to the page
@@ -67,17 +96,125 @@ class App extends React.Component {
 			settingsVisible: false,
 			googleApiKey: values.googleApiKey,
 			mapBoxAccessToken: values.mapBoxAccessToken,
+			dataSource: values.dataSource,
+			customDataUrl: values.customDataUrl,
+			ttnApplicationId: values.ttnApplicationId,
+			ttnDeviceId: values.ttnDeviceId,
+			ttnAccessKey: values.ttnAccessKey,
+			ttnCorsProxyUrl: values.ttnCorsProxyUrl,
+			ttnQueryLast: values.ttnQueryLast,
+			maxPointsToRenderOnMap: values.maxPointsToRenderOnMap,
+		});
+	}
+
+	handleLoadData = () => {
+		const { loadingData } = this.state;
+		if (loadingData) {
+			return; // don't load another time in parallel
+		}
+		console.log('handle fetch');
+		this.setState({ loadingData: true });
+		this.fetchData()
+			.then((response) => {
+				// check errors
+				if (response.ok) {
+					if (response.status === 204) {
+						return [];
+					}
+					// should we handle non json response?
+					return response.json();
+				}
+				// show issue
+				if (response.status === 0) {
+					notification.error({
+						message: 'Unable to get response',
+						description: 'Are there CORS limitations in place?',
+					});
+				} else {
+					notification.error({
+						message: 'Error code reported',
+						description: response.statusText,
+					});
+				}
+				this.setState({ loadingData: false });
+				return null; // will pass 'null' as data for next processor in the chain
+			})
+			.then((data) => {
+				if (data) {
+					// do something
+					this.processLocationData(data);
+				}
+				this.setState({ loadingData: false });
+			})
+			.catch((error) => {
+				console.error(error);
+				notification.error({
+					message: 'Error loading data',
+					description: error.toString(),
+				});
+				this.setState({ loadingData: false });
+			});
+		// setTimeout(() => { this.setState({ loadingData: false }); }, 5000);
+	};
+
+	processLocationData(data) {
+		console.log(data);
+		this.data = data; // TEMP
+		/*
+		{
+			"altitude": 69,
+			"device_id": "tbeam-v11",
+			"hdop": 1.44,
+			"latitude": 31.000000,
+			"longitude": 34.000000,
+			"raw": "QQQQQQQQQQQ",
+			"sats": 6,
+			"time": "2020-06-21T06:38:50.916274439Z"
+		},
+		or for Cayenne LPP
+		{
+			device_id,
+			time,
+			gps_20: "map[altitude:93 latitude:31.0000 longitude:34.0000]"
+		}
+		*/
+		// Handling hdop: https://gis.stackexchange.com/questions/97774/how-can-i-convert-horizontal-dilution-of-position-to-a-radius-of-68-confidence
+		// cheap USB/Bluetooth/built-in GPS units the manufacturers simply use 3-5 m as the accuracy of the device and then multiply it with HDOP
+	}
+
+	fetchData() {
+		const {
+			dataSource, customDataUrl, ttnApplicationId, ttnDeviceId, ttnAccessKey, ttnCorsProxyUrl, ttnQueryLast,
+		} = this.state;
+		if (dataSource === GLOBAL_CONSTANTS.DATA_SOURCE.CUSTOM) {
+			return fetch(customDataUrl, {
+				// mode: 'no-cors', // you get no content with this
+			});
+		}
+		if (dataSource === GLOBAL_CONSTANTS.DATA_SOURCE.TTN) {
+			const myHeaders = new Headers();
+			myHeaders.append('Accept', 'application/json');
+			myHeaders.append('Authorization', `key ${ttnAccessKey}`);
+			return fetch(`${ttnCorsProxyUrl}https://${ttnApplicationId}.data.thethingsnetwork.org/api/v2/query/${ttnDeviceId}?last=${ttnQueryLast}`, {
+				headers: myHeaders,
+			}); // TODO, make "last" configurable
+		}
+		// else, error
+		return new Promise((resolve, reject) => {
+			reject(new Error('Data source is not configured'));
 		});
 	}
 
 	render() {
 		const {
 			loadingData, settingsVisible, googleApiKey, mapBoxAccessToken,
+			dataSource, customDataUrl, ttnApplicationId, ttnDeviceId, ttnAccessKey, ttnCorsProxyUrl, ttnQueryLast,
+			maxPointsToRenderOnMap,
 		} = this.state;
 
 		return (
-			<div className="App">
-				<nav>
+			<AppContainer>
+				<Navigation>
 					<Button loading={loadingData} onClick={this.handleLoadData} icon={<ReloadOutlined />}>Reload data</Button>
 					<Popover
 						placement="bottom"
@@ -89,6 +226,14 @@ class App extends React.Component {
 								serializedSettings={`${CONSTANTS.SETTINGS_HASH_PARAM}=${encodeURIComponent(SettingsProvider.serialize())}`}
 								googleApiKey={googleApiKey}
 								mapBoxAccessToken={mapBoxAccessToken}
+								dataSource={dataSource}
+								customDataUrl={customDataUrl}
+								ttnApplicationId={ttnApplicationId}
+								ttnDeviceId={ttnDeviceId}
+								ttnAccessKey={ttnAccessKey}
+								ttnCorsProxyUrl={ttnCorsProxyUrl}
+								ttnQueryLast={ttnQueryLast}
+								maxPointsToRenderOnMap={maxPointsToRenderOnMap}
 							/>
 						)}
 						trigger="click"
@@ -96,13 +241,13 @@ class App extends React.Component {
 					>
 						<Button icon={<SettingOutlined />}>Settings</Button>
 					</Popover>
-				</nav>
+				</Navigation>
 				<Locator
-					className="Locator"
 					googleApiKey={googleApiKey}
 					mapBoxAccessToken={mapBoxAccessToken}
+					maxPointsToRenderOnMap={maxPointsToRenderOnMap}
 				/>
-			</div>
+			</AppContainer>
 		);
 	}
 }

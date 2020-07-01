@@ -82,7 +82,7 @@ class Locator extends React.Component {
 			timeout: 27000,
 		});
 
-		// MapBox needs to be only once or it will recreate the map every time
+		// MapBox needs to be created only once or it will recreate the map every time
 		// https://github.com/alex3165/react-mapbox-gl/issues/812
 		this.MapBox = ReactMapboxGl({
 			accessToken: mapBoxAccessToken,
