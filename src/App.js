@@ -2,13 +2,15 @@ import React from 'react';
 import styled from 'styled-components';
 import { Button, Popover, notification } from 'antd';
 import 'antd/dist/antd.css';
-import { ReloadOutlined, SettingOutlined } from '@ant-design/icons';
+import { ReloadOutlined, SettingOutlined, DashboardOutlined } from '@ant-design/icons';
 import { HashGet } from 'hashget'
 
 import Locator from './components/organisms/Locator';
 import Settings from './components/organisms/Settings';
+import PointsTable from './components/organisms/PointsTable';
 import SettingsProvider from './lib/Settings';
 import GLOBAL_CONSTANTS from './lib/Constants';
+import PayloadProcessing from './lib/PayloadProcessing';
 // import './App.css';
 
 const CONSTANTS = {
@@ -45,6 +47,8 @@ class App extends React.Component {
 		this.state = {
 			loadingData: false,
 			settingsVisible: false,
+			pointsTableVisible: false,
+			points: [],
 			// persistent settings
 			googleApiKey: SettingsProvider.getGoogleApiKey(),
 			mapBoxAccessToken: SettingsProvider.getMapBoxAccessToken(),
@@ -158,28 +162,17 @@ class App extends React.Component {
 	};
 
 	processLocationData(data) {
-		console.log(data);
-		this.data = data; // TEMP
-		/*
-		{
-			"altitude": 69,
-			"device_id": "tbeam-v11",
-			"hdop": 1.44,
-			"latitude": 31.000000,
-			"longitude": 34.000000,
-			"raw": "QQQQQQQQQQQ",
-			"sats": 6,
-			"time": "2020-06-21T06:38:50.916274439Z"
-		},
-		or for Cayenne LPP
-		{
-			device_id,
-			time,
-			gps_20: "map[altitude:93 latitude:31.0000 longitude:34.0000]"
+		console.log('Got data', data.length, data);
+
+		try {
+			const points = data.map(PayloadProcessing.preProcessSample);
+			this.setState({ points });
+		} catch (error) {
+			notification.error({
+				message: 'Error parsing data',
+				description: error.toString(),
+			});
 		}
-		*/
-		// Handling hdop: https://gis.stackexchange.com/questions/97774/how-can-i-convert-horizontal-dilution-of-position-to-a-radius-of-68-confidence
-		// cheap USB/Bluetooth/built-in GPS units the manufacturers simply use 3-5 m as the accuracy of the device and then multiply it with HDOP
 	}
 
 	fetchData() {
@@ -207,7 +200,8 @@ class App extends React.Component {
 
 	render() {
 		const {
-			loadingData, settingsVisible, googleApiKey, mapBoxAccessToken,
+			loadingData, settingsVisible, pointsTableVisible, points,
+			googleApiKey, mapBoxAccessToken,
 			dataSource, customDataUrl, ttnApplicationId, ttnDeviceId, ttnAccessKey, ttnCorsProxyUrl, ttnQueryLast,
 			maxPointsToRenderOnMap,
 		} = this.state;
@@ -216,6 +210,22 @@ class App extends React.Component {
 			<AppContainer>
 				<Navigation>
 					<Button loading={loadingData} onClick={this.handleLoadData} icon={<ReloadOutlined />}>Reload data</Button>
+
+					<Popover
+						placement="bottom"
+						title="Data"
+						visible={pointsTableVisible}
+						content={(
+							<PointsTable
+								points={points}
+							/>
+						)}
+						trigger="click"
+						onVisibleChange={(visible) => { this.setState({ pointsTableVisible: visible }); }}
+					>
+						<Button icon={<DashboardOutlined />}>Data</Button>
+					</Popover>
+
 					<Popover
 						placement="bottom"
 						title="Settings"
@@ -237,7 +247,7 @@ class App extends React.Component {
 							/>
 						)}
 						trigger="click"
-						onVisibleChange={() => { this.setState({ settingsVisible: true }) }}
+						onVisibleChange={() => { this.setState({ settingsVisible: true /* Force closing with save or cancel causing onFinish */ }) }}
 					>
 						<Button icon={<SettingOutlined />}>Settings</Button>
 					</Popover>
