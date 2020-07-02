@@ -88,7 +88,7 @@ class App extends React.Component {
 
 		// special case, check for google api key change
 		// Google API key change requires a reload because the key is part of a JS url that is added to the page
-		// further, it didn't work in componentDidUpdate under the HOC, needs to be here, above
+		// further, it didn't work in componentDidUpdate under the HOC, needs to be above (Locator or App)
 		if (googleApiKey !== values.googleApiKey) {
 			console.log('handleSettingsFinish, reload');
 			window.location.reload();

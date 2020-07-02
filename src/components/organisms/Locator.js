@@ -1,16 +1,9 @@
 import React from 'react';
 import { Alert } from 'antd';
 import PropTypes from 'prop-types';
-import {
-	Map, Marker, GoogleApiWrapper,
-} from 'google-maps-react';
-import ReactMapboxGl, {
-	Layer,
-	Feature,
-	ScaleControl,
-	ZoomControl,
-	RotationControl,
-} from 'react-mapbox-gl';
+
+import LocatorGoogleMaps from './LocatorGoogleMaps';
+import LocatorMapBox from './LocatorMapBox';
 
 // browser agnostic orientation
 function getBrowserOrientation() {
@@ -65,8 +58,6 @@ class Locator extends React.Component {
 	}
 
 	componentDidMount() {
-		const { mapBoxAccessToken } = this.props;
-
 		// window.addEventListener('resize', this.handleResize);
 
 		// https://developer.mozilla.org/en-US/docs/Web/API/Window/ondeviceorientation
@@ -81,29 +72,6 @@ class Locator extends React.Component {
 			maximumAge: 30000,
 			timeout: 27000,
 		});
-
-		// MapBox needs to be created only once or it will recreate the map every time
-		// https://github.com/alex3165/react-mapbox-gl/issues/812
-		this.MapBox = ReactMapboxGl({
-			accessToken: mapBoxAccessToken,
-		});
-		this.mapBoxAccessToken = mapBoxAccessToken; // store token of the MaxBox instance
-		console.log('componentDidMount', this.props, this.MapBox);
-	}
-
-	componentDidUpdate(prevProps) {
-		const { mapBoxAccessToken } = this.props;
-		// console.log('componentDidUpdate', prevProps, this.props);
-
-		// https://www.pluralsight.com/guides/prop-changes-in-react-component
-		if (prevProps.mapBoxAccessToken !== mapBoxAccessToken) {
-			// recreate map
-			this.MapBox = ReactMapboxGl({
-				accessToken: mapBoxAccessToken,
-			});
-			this.mapBoxAccessToken = mapBoxAccessToken; // store token of the MaxBox instance
-			console.log('componentDidUpdate', mapBoxAccessToken, this.MapBox);
-		}
 	}
 
 	/*
@@ -215,51 +183,33 @@ class Locator extends React.Component {
 	}
 
 	render() {
-		const { google, googleApiKey, mapBoxAccessToken } = this.props;
+		const { googleApiKey, mapBoxAccessToken } = this.props;
 		const { latitude, longitude, heading } = this.state;
 
 		// console.log('render', this.props);
 
 		return (
-			<>
-				{this.MapBox && mapBoxAccessToken && this.mapBoxAccessToken === mapBoxAccessToken && (
-					<div style={{ width: '100vw', height: '100vh' }}>
-						<this.MapBox
-							// eslint-disable-next-line react/style-prop-object
-							style="mapbox://styles/mapbox/streets-v9"
-							containerStyle={{
-								// height: '100vh',
-								// width: '100vw'
-								height: '100%',
-								width: '100%',
-							}}
-							center={[longitude, latitude]}
-							bearing={[-heading]}
-							zoom={[16]}
-						>
-							<ScaleControl />
-							<ZoomControl />
-							<RotationControl style={{ top: 80 }} />
-							<Layer type="symbol" id="marker" layout={{ 'icon-image': 'marker-15' }}>
-								<Feature coordinates={[-0.481747846041145, 51.3233379650232]} />
-							</Layer>
-						</this.MapBox>
-					</div>
+			<div style={{ width: '100vw', height: '100vh' }}>
+				{mapBoxAccessToken && (
+					<LocatorMapBox
+						accessToken={mapBoxAccessToken}
+						latitude={latitude}
+						longitude={longitude}
+						heading={heading}
+					/>
 				)}
-				{!mapBoxAccessToken && google && googleApiKey && (
-					<div style={{ width: '100vw', height: '100vh' }}>
-						<Map google={google} zoom={16} center={{ lat: latitude, lng: longitude }}>
-							<Marker
-								onClick={this.onMarkerClick}
-								name="Current location"
-							/>
-						</Map>
-					</div>
+				{!mapBoxAccessToken && googleApiKey && (
+					<LocatorGoogleMaps
+						apiKey={googleApiKey}
+						latitude={latitude}
+						longitude={longitude}
+						heading={heading}
+					/>
 				)}
 				{!googleApiKey && !mapBoxAccessToken && (
 					<Alert message="No map API keys specified in Settings" type="error" />
 				)}
-			</>
+			</div>
 		);
 	}
 }
@@ -270,15 +220,8 @@ Locator.defaultProps = {
 }
 
 Locator.propTypes = {
-	google: PropTypes.shape({}).isRequired,
 	mapBoxAccessToken: PropTypes.string,
 	googleApiKey: PropTypes.string,
 };
 
-export default GoogleApiWrapper(
-	(props) => ({
-		apiKey: props.googleApiKey, // https://console.developers.google.com/apis/credentials?project=ttn-tracker-locator
-		// language: props.language,
-	}
-	),
-)(Locator)
+export default Locator;
