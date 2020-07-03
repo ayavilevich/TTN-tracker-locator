@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import {
 	Map, Marker, GoogleApiWrapper,
 } from 'google-maps-react';
+import { MapValidPointsPropType } from '../../lib/PropTypes';
 
 class LocatorGoogleMaps extends React.Component {
 	/*
@@ -18,7 +19,10 @@ class LocatorGoogleMaps extends React.Component {
 			apiKey, // eslint-disable-line no-unused-vars
 			latitude,
 			longitude,
+			// eslint-disable-next-line no-unused-vars
 			heading, // TODO, emulate heading in google map
+			// eslint-disable-next-line no-unused-vars
+			points, // TODO, render points
 		} = this.props;
 
 		// console.log('render', this.props);
@@ -50,6 +54,7 @@ LocatorGoogleMaps.propTypes = {
 	longitude: PropTypes.number,
 	latitude: PropTypes.number,
 	heading: PropTypes.number,
+	points: MapValidPointsPropType.isRequired,
 };
 
 export default GoogleApiWrapper(

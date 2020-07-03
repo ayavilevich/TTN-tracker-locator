@@ -1,6 +1,7 @@
 import React from 'react';
 import { Table } from 'antd';
-import PropTypes from 'prop-types';
+// import PropTypes from 'prop-types';
+import { PointsPropType } from '../../lib/PropTypes';
 
 const columns = [
 	{
@@ -74,15 +75,7 @@ PointsTable.defaultProps = {
 }
 
 PointsTable.propTypes = {
-	points: PropTypes.arrayOf(PropTypes.shape({
-		time: PropTypes.instanceOf(Date).isRequired,
-		deviceId: PropTypes.string,
-		altitude: PropTypes.number,
-		latitude: PropTypes.number,
-		longitude: PropTypes.number,
-		hdop: PropTypes.number,
-		sats: PropTypes.number,
-	})),
+	points: PointsPropType,
 };
 
 export default PointsTable;

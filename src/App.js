@@ -206,6 +206,20 @@ class App extends React.Component {
 			maxPointsToRenderOnMap,
 		} = this.state;
 
+		// get subset of points
+		const validPoints = points.filter((point) => typeof point.latitude === 'number' && typeof point.longitude === 'number');
+		let pointsToRenderOnMap = [];
+		if (points.length) {
+			if (points.length > maxPointsToRenderOnMap) {
+				// assume sorted by time
+				// assume older entries are first
+				pointsToRenderOnMap = validPoints.slice(-maxPointsToRenderOnMap);
+			} else {
+				pointsToRenderOnMap = validPoints;
+			}
+		}
+		console.log('points for map', points.length, validPoints.length, pointsToRenderOnMap.length);
+
 		return (
 			<AppContainer>
 				<Navigation>
@@ -255,7 +269,7 @@ class App extends React.Component {
 				<Locator
 					googleApiKey={googleApiKey}
 					mapBoxAccessToken={mapBoxAccessToken}
-					maxPointsToRenderOnMap={maxPointsToRenderOnMap}
+					points={pointsToRenderOnMap}
 				/>
 			</AppContainer>
 		);

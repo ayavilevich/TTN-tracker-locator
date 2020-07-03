@@ -13,6 +13,7 @@ import LabelWithTooltip from '../molecules/LabelWithTooltip';
 import GLOBAL_CONSTANTS from '../../lib/Constants';
 
 const CONSTANTS = {
+	DEFAULT_DATA_SOURCE: GLOBAL_CONSTANTS.DATA_SOURCE.TTN,
 	DEFAULT_CORS_PROXY: 'https://cors-anywhere.herokuapp.com/',
 	DEFAULT_QUERY_LAST: '10m',
 	DEFAULT_MAX_POINTS: 10,
@@ -216,6 +217,9 @@ class Settings extends React.Component {
 }
 
 Settings.defaultProps = {
+	mapBoxAccessToken: '',
+	googleApiKey: '',
+	dataSource: CONSTANTS.DEFAULT_DATA_SOURCE,
 	customDataUrl: '',
 	ttnApplicationId: '',
 	ttnDeviceId: '',
@@ -228,9 +232,9 @@ Settings.defaultProps = {
 Settings.propTypes = {
 	onFinish: PropTypes.func.isRequired,
 	serializedSettings: PropTypes.string.isRequired,
-	mapBoxAccessToken: PropTypes.string.isRequired,
-	googleApiKey: PropTypes.string.isRequired,
-	dataSource: PropTypes.string.isRequired,
+	mapBoxAccessToken: PropTypes.string,
+	googleApiKey: PropTypes.string,
+	dataSource: PropTypes.string,
 	customDataUrl: PropTypes.string,
 	ttnApplicationId: PropTypes.string,
 	ttnDeviceId: PropTypes.string,

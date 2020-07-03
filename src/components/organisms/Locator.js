@@ -1,9 +1,21 @@
 import React from 'react';
+import styled from 'styled-components';
 import { Alert } from 'antd';
 import PropTypes from 'prop-types';
+import { MapValidPointsPropType } from '../../lib/PropTypes';
 
 import LocatorGoogleMaps from './LocatorGoogleMaps';
 import LocatorMapBox from './LocatorMapBox';
+
+const FullViewport = styled.div`
+	width: 100vw;
+	height: 100vh;
+`;
+const AlertsOverlay = styled.div`
+	position: absolute;
+	left: 10vw;
+	top: 10vh;
+`;
 
 // browser agnostic orientation
 function getBrowserOrientation() {
@@ -50,9 +62,9 @@ class Locator extends React.Component {
 	constructor(props) {
 		super(props);
 		this.state = {
-			heading: 0,
-			latitude: 0,
-			longitude: 0,
+			heading: false,
+			latitude: false,
+			longitude: false,
 		};
 		this.watchPositionId = null;
 	}
@@ -63,6 +75,7 @@ class Locator extends React.Component {
 		// https://developer.mozilla.org/en-US/docs/Web/API/Window/ondeviceorientation
 		// https://developer.mozilla.org/en-US/docs/Web/API/DeviceOrientationEvent
 		// https://developer.mozilla.org/en-US/docs/Web/API/Window/ondeviceorientationabsolute
+		// https://developer.mozilla.org/en-US/docs/Web/API/OrientationSensor
 		window.addEventListener('deviceorientation', this.handleHeadingChange);
 		window.addEventListener('deviceorientationabsolute', this.handleHeadingChange);
 
@@ -89,9 +102,6 @@ class Locator extends React.Component {
 	componentWillUnmount() {
 		// window.removeEventListener('resize', this.handleResize);
 
-		// https://developer.mozilla.org/en-US/docs/Web/API/Window/ondeviceorientation
-		// https://developer.mozilla.org/en-US/docs/Web/API/DeviceOrientationEvent
-		// https://developer.mozilla.org/en-US/docs/Web/API/Window/ondeviceorientationabsolute
 		window.removeEventListener('deviceorientation', this.handleHeadingChange);
 		window.removeEventListener('deviceorientationabsolute', this.handleHeadingChange);
 
@@ -165,7 +175,7 @@ class Locator extends React.Component {
 			// positionHng.textContent = "n/a";
 			// showHeadingWarning();
 			console.log('No heading');
-			this.setState({ heading: 0 });
+			this.setState({ heading: false });
 		}
 	};
 
@@ -180,22 +190,24 @@ class Locator extends React.Component {
 	handleLocationUpdateFail = (error) => {
 		// TODO, render alert or notification
 		console.log('location fail: ', error);
+		this.setState({ latitude: false, longitude: false });
 	}
 
 	render() {
-		const { googleApiKey, mapBoxAccessToken } = this.props;
+		const { googleApiKey, mapBoxAccessToken, points } = this.props;
 		const { latitude, longitude, heading } = this.state;
 
 		// console.log('render', this.props);
 
 		return (
-			<div style={{ width: '100vw', height: '100vh' }}>
+			<FullViewport>
 				{mapBoxAccessToken && (
 					<LocatorMapBox
 						accessToken={mapBoxAccessToken}
 						latitude={latitude}
 						longitude={longitude}
 						heading={heading}
+						points={points}
 					/>
 				)}
 				{!mapBoxAccessToken && googleApiKey && (
@@ -204,12 +216,21 @@ class Locator extends React.Component {
 						latitude={latitude}
 						longitude={longitude}
 						heading={heading}
+						points={points}
 					/>
 				)}
 				{!googleApiKey && !mapBoxAccessToken && (
 					<Alert message="No map API keys specified in Settings" type="error" />
 				)}
-			</div>
+				<AlertsOverlay>
+					{heading === false && (
+						<Alert message="Your heading is not available" type="warning" />
+					)}
+					{(latitude === false || longitude === false) && (
+						<Alert message="Your location is not available" type="warning" />
+					)}
+				</AlertsOverlay>
+			</FullViewport>
 		);
 	}
 }
@@ -222,6 +243,7 @@ Locator.defaultProps = {
 Locator.propTypes = {
 	mapBoxAccessToken: PropTypes.string,
 	googleApiKey: PropTypes.string,
+	points: MapValidPointsPropType.isRequired,
 };
 
 export default Locator;
