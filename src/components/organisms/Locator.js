@@ -2,10 +2,15 @@ import React from 'react';
 import styled from 'styled-components';
 import { Alert } from 'antd';
 import PropTypes from 'prop-types';
+import throttle from 'lodash.throttle';
 import { MapValidPointsPropType } from '../../lib/PropTypes';
 
 import LocatorGoogleMaps from './LocatorGoogleMaps';
 import LocatorMapBox from './LocatorMapBox';
+
+const CONSTANTS = {
+	THROTTLE_HEADING: 100, // 10Hz
+};
 
 const FullViewport = styled.div`
 	width: 100vw;
@@ -67,6 +72,7 @@ class Locator extends React.Component {
 			longitude: false,
 		};
 		this.watchPositionId = null;
+		this.throttledHandleHeadingChange = throttle(this.handleHeadingChange, CONSTANTS.THROTTLE_HEADING);
 	}
 
 	componentDidMount() {
@@ -76,8 +82,8 @@ class Locator extends React.Component {
 		// https://developer.mozilla.org/en-US/docs/Web/API/DeviceOrientationEvent
 		// https://developer.mozilla.org/en-US/docs/Web/API/Window/ondeviceorientationabsolute
 		// https://developer.mozilla.org/en-US/docs/Web/API/OrientationSensor
-		window.addEventListener('deviceorientation', this.handleHeadingChange);
-		window.addEventListener('deviceorientationabsolute', this.handleHeadingChange);
+		window.addEventListener('deviceorientation', this.throttledHandleHeadingChange);
+		window.addEventListener('deviceorientationabsolute', this.throttledHandleHeadingChange);
 
 		// https://developer.mozilla.org/en-US/docs/Web/API/Geolocation/watchPosition
 		this.watchPositionId = navigator.geolocation.watchPosition(this.handleLocationUpdate, this.handleLocationUpdateFail, {
@@ -102,8 +108,8 @@ class Locator extends React.Component {
 	componentWillUnmount() {
 		// window.removeEventListener('resize', this.handleResize);
 
-		window.removeEventListener('deviceorientation', this.handleHeadingChange);
-		window.removeEventListener('deviceorientationabsolute', this.handleHeadingChange);
+		window.removeEventListener('deviceorientation', this.throttledHandleHeadingChange);
+		window.removeEventListener('deviceorientationabsolute', this.throttledHandleHeadingChange);
 
 		// https://developer.mozilla.org/en-US/docs/Web/API/Geolocation/clearWatch
 		navigator.geolocation.clearWatch(this.watchPositionId);
@@ -181,10 +187,9 @@ class Locator extends React.Component {
 
 	// location (based on https://github.com/lamplightdev/compass)
 	handleLocationUpdate = (position) => {
-		const lat = position.coords.latitude;
-		const lng = position.coords.longitude;
-		console.log('pos', lat, lng);
-		this.setState({ latitude: lat, longitude: lng });
+		console.log('pos', position.coords); // can also have heading, accuracy and speed but not all browser provide that
+		const { latitude, longitude } = position.coords;
+		this.setState({ latitude, longitude });
 	}
 
 	handleLocationUpdateFail = (error) => {

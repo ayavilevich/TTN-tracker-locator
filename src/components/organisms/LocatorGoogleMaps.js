@@ -51,9 +51,9 @@ LocatorGoogleMaps.defaultProps = {
 LocatorGoogleMaps.propTypes = {
 	google: PropTypes.shape({}).isRequired,
 	apiKey: PropTypes.string.isRequired,
-	longitude: PropTypes.number,
-	latitude: PropTypes.number,
-	heading: PropTypes.number,
+	longitude: PropTypes.oneOfType([PropTypes.number, PropTypes.bool]),
+	latitude: PropTypes.oneOfType([PropTypes.number, PropTypes.bool]),
+	heading: PropTypes.oneOfType([PropTypes.number, PropTypes.bool]),
 	points: MapValidPointsPropType.isRequired,
 };
 

@@ -15,11 +15,13 @@ const linePaint = {
 	'line-width': 6,
 };
 
+/*
 const meCirclePaint = {
 	'circle-radius': 10,
 	'circle-color': '#E54E52',
 	'circle-opacity': 0.8,
 };
+*/
 
 const targetCirclePaint = {
 	'circle-radius': 10,
@@ -67,7 +69,7 @@ class LocatorMapBox extends React.Component {
 		} = this.props;
 
 		const route = points.map((point) => [point.longitude, point.latitude]);
-		console.log('mapbox render, points', points.length, points, route);
+		// console.log('mapbox render, points', points.length, points, route);
 
 		// decide on center of map
 		let center;
@@ -78,7 +80,7 @@ class LocatorMapBox extends React.Component {
 		} else {
 			center = [GLOBAL_CONSTANTS.DEFAULT_MAP_CENTER.LONGITUDE, GLOBAL_CONSTANTS.DEFAULT_MAP_CENTER.LATITUDE]; // some default position that is not just ocean
 		}
-		console.log('map center', center);
+		// console.log('map center', center);
 
 		return (
 			<>
@@ -136,9 +138,9 @@ LocatorMapBox.defaultProps = {
 
 LocatorMapBox.propTypes = {
 	accessToken: PropTypes.string.isRequired,
-	longitude: PropTypes.number,
-	latitude: PropTypes.number,
-	heading: PropTypes.number,
+	longitude: PropTypes.oneOfType([PropTypes.number, PropTypes.bool]),
+	latitude: PropTypes.oneOfType([PropTypes.number, PropTypes.bool]),
+	heading: PropTypes.oneOfType([PropTypes.number, PropTypes.bool]),
 	points: MapValidPointsPropType.isRequired,
 };
 
