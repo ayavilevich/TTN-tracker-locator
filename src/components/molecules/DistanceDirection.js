@@ -2,12 +2,12 @@ import React from 'react';
 // import styled from 'styled-components';
 import { Row, Col, Statistic } from 'antd';
 import {
-	ArrowUpOutlined, ArrowLeftOutlined, ArrowRightOutlined, EyeOutlined, CarOutlined, RocketOutlined,
+	ArrowUpOutlined, ArrowLeftOutlined, ArrowRightOutlined, EyeOutlined, CarOutlined, RocketOutlined, QuestionOutlined,
 } from '@ant-design/icons';
 import PropTypes from 'prop-types';
 
 // eslint-disable-next-line react/prefer-stateless-function
-class Locator extends React.Component {
+class DistanceDirection extends React.Component {
 	/*
 	constructor(props) {
 		super(props);
@@ -33,13 +33,17 @@ class Locator extends React.Component {
 		}
 
 		// format distance with units
-		const directionValue = direction > 180 ? direction - 360 : direction;
-		let directionIcon = (<ArrowUpOutlined />);
-		if (directionValue < -45) {
-			directionIcon = (<ArrowLeftOutlined />);
-		}
-		if (directionValue > 45) {
-			directionIcon = (<ArrowRightOutlined />);
+		let directionValue = '-';
+		let directionIcon = (<QuestionOutlined />);
+		if (direction !== false) {
+			directionValue = direction > 180 ? direction - 360 : direction;
+			directionIcon = (<ArrowUpOutlined />);
+			if (directionValue < -45) {
+				directionIcon = (<ArrowLeftOutlined />);
+			}
+			if (directionValue > 45) {
+				directionIcon = (<ArrowRightOutlined />);
+			}
 		}
 
 		return (
@@ -67,9 +71,13 @@ class Locator extends React.Component {
 	}
 }
 
-Locator.propTypes = {
+DistanceDirection.defaultProps = {
+	direction: false,
+}
+
+DistanceDirection.propTypes = {
 	distance: PropTypes.number.isRequired, // in meters
-	direction: PropTypes.number.isRequired, // in degrees
+	direction: PropTypes.oneOfType([PropTypes.number, PropTypes.bool]), // in degrees
 };
 
-export default Locator;
+export default DistanceDirection;

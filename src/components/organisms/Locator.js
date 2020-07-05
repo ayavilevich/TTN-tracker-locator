@@ -222,15 +222,18 @@ class Locator extends React.Component {
 		// distance and direction
 		let targetDistance = false;
 		let targetDirection = false;
-		// test
-		targetDistance = 340;
-		targetDirection = 20;
+		// test when there is not position or heading
+		// targetDistance = 340;
+		// targetDirection = 20;
 		// calculate from known points
 		if (latitude !== false && longitude !== false && targetPoint) {
 			const p1 = new LatLon(latitude, longitude);
 			const p2 = new LatLon(targetPoint.latitude, targetPoint.longitude);
 			targetDistance = p1.distanceTo(p2); // defaults to meters
-			targetDirection = p1.initialBearingTo(p2); // degrees from north (0°..360°).
+			if (heading !== false) {
+				targetDirection = p1.initialBearingTo(p2); // degrees from north (0°..360°).
+				targetDirection -= heading; // correct relative to current heading
+			}
 		}
 
 		// console.log('render', this.props);
@@ -258,7 +261,7 @@ class Locator extends React.Component {
 				{!googleApiKey && !mapBoxAccessToken && (
 					<Alert message="No map API keys specified in Settings" type="error" />
 				)}
-				{targetDistance !== false && targetDirection !== false && (
+				{targetDistance !== false && (
 					<DirectionOverlay>
 						<DistanceDirection
 							distance={targetDistance}
