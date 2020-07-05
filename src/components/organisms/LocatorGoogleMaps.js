@@ -60,7 +60,7 @@ class LocatorGoogleMaps extends React.Component {
 		return (
 			<>
 				{google && (
-					<Map google={google} zoom={16} center={center}>
+					<Map google={google} zoom={16} center={center} zoomControl={false} mapTypeControl={false} fullscreenControl={false} streetViewControl={false}>
 						{longitude !== false && latitude !== false && heading !== false && (
 							<Marker
 								name="Your location with heading"

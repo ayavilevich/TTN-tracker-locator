@@ -19,17 +19,25 @@ const CONSTANTS = {
 const FullViewport = styled.div`
 	width: 100vw;
 	height: 100vh;
-	text-align: center;
 `;
+
 const AlertsOverlay = styled.div`
 	position: absolute;
-	left: 10vw;
+	left: 2vw;
 	top: 10vh;
 `;
-const DirectionOverlay = styled.div`
-	/* also try to center this with flex box */
+
+// https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_Flexible_Box_Layout/Basic_Concepts_of_Flexbox
+const NavigationBar = styled.div`
 	position: absolute;
-	top: 80vh;
+	bottom: 2vh;
+	display: flex;
+	width: 100%;
+	flex-flow: row nowrap;
+	justify-content: center;
+`;
+
+const DirectionOverlay = styled.div`
 	display: inline-block;
 	padding: 4px 15px;
 	background: #fff;
@@ -269,14 +277,16 @@ class Locator extends React.Component {
 				{!googleApiKey && !mapBoxAccessToken && (
 					<Alert message="No map API keys specified in Settings" type="error" />
 				)}
-				{targetDistance !== false && (
-					<DirectionOverlay>
-						<DistanceDirection
-							distance={targetDistance}
-							direction={targetDirection}
-						/>
-					</DirectionOverlay>
-				)}
+				<NavigationBar>
+					{targetDistance !== false && (
+						<DirectionOverlay>
+							<DistanceDirection
+								distance={targetDistance}
+								direction={targetDirection}
+							/>
+						</DirectionOverlay>
+					)}
+				</NavigationBar>
 				<AlertsOverlay>
 					{heading === false && (
 						<Alert message="Your heading is not available" type="warning" />

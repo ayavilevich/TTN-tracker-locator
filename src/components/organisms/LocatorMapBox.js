@@ -99,9 +99,11 @@ class LocatorMapBox extends React.Component {
 						bearing={[heading || 0]}
 						zoom={[16]}
 					>
+						{/*
 						<ScaleControl />
 						<ZoomControl />
 						<RotationControl style={{ top: 80 }} />
+						*/}
 						{/*
 						<Layer type="symbol" layout={{ 'icon-image': 'marker-15' }}>
 							<Feature coordinates={[longitude + 0.001, latitude]} />
