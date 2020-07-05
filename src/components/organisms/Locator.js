@@ -294,6 +294,9 @@ class Locator extends React.Component {
 					{(latitude === false || longitude === false) && (
 						<Alert message="Your location is not available" type="warning" />
 					)}
+					{points.length === 0 && (
+						<Alert message="Target location is not available" type="warning" />
+					)}
 				</AlertsOverlay>
 			</FullViewport>
 		);

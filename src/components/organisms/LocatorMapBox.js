@@ -3,9 +3,11 @@ import PropTypes from 'prop-types';
 import ReactMapboxGl, {
 	Layer,
 	Feature,
+	/*
 	ScaleControl,
 	ZoomControl,
 	RotationControl,
+	*/
 } from 'react-mapbox-gl';
 import { MapValidPointsPropType } from '../../lib/PropTypes';
 import GLOBAL_CONSTANTS from '../../lib/Constants';
@@ -71,6 +73,15 @@ class LocatorMapBox extends React.Component {
 		const route = points.map((point) => [point.longitude, point.latitude]);
 		// console.log('mapbox render, points', points.length, points, route);
 
+		// figure out optimal bounds, TODO
+		// fitBounds seems to be reseting the bearing (per documentation)
+		// https://docs.mapbox.com/mapbox-gl-js/api/map/#map#fitbounds
+		// https://stackoverflow.com/questions/35586360/mapbox-gl-js-getbounds-fitbounds
+		// example of a custom fitBounds
+		// https://github.com/mapbox/mapbox-gl-js/issues/1338
+		// I might need to do my own to fit a circle rather than a rectangular bounds
+		// radius of the circle based on the route points farthest from the center
+
 		// decide on center of map
 		let center;
 		if (longitude !== false && latitude !== false) {
@@ -97,7 +108,7 @@ class LocatorMapBox extends React.Component {
 						}}
 						center={center}
 						bearing={[heading || 0]}
-						zoom={[16]}
+						zoom={[GLOBAL_CONSTANTS.DEFAULT_MAP_ZOOM]}
 					>
 						{/*
 						<ScaleControl />

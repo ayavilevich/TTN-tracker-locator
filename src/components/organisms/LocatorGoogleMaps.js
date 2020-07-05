@@ -27,24 +27,8 @@ class LocatorGoogleMaps extends React.Component {
 
 		// console.log('render', this.props);
 
-		// figure out optimal bounds, TODO
-		/*
-		var points = [
-			{ lat: 42.02, lng: -77.01 },
-			{ lat: 42.03, lng: -77.02 },
-			{ lat: 41.03, lng: -77.04 },
-			{ lat: 42.05, lng: -77.02 }
-		]
-		var bounds = new this.props.google.maps.LatLngBounds();
-		for (var i = 0; i < points.length; i++) {
-		bounds.extend(points[i]);
-		}
-
-		then pass: bounds={bounds}
-		*/
-
 		const route = points.map((point) => ({ lng: point.longitude, lat: point.latitude }));
-		console.log('google maps render, points', points.length, points, route);
+		// console.log('google maps render, points', points.length, points, route);
 
 		// decide on center of map
 		let center;
@@ -57,10 +41,26 @@ class LocatorGoogleMaps extends React.Component {
 		}
 		// console.log('map center', center);
 
+		// figure out optimal bounds
+		const bounds = new google.maps.LatLngBounds();
+		route.forEach((point) => {
+			bounds.extend(point);
+			bounds.extend({ lat: 2 * center.lat - point.lat, lng: 2 * center.lng - point.lng }); // symmetrically
+		});
+
 		return (
 			<>
 				{google && (
-					<Map google={google} zoom={16} center={center} zoomControl={false} mapTypeControl={false} fullscreenControl={false} streetViewControl={false}>
+					<Map
+						google={google}
+						bounds={route.length > 0 ? bounds : undefined}
+						center={route.length > 0 ? undefined : center}
+						zoom={route.length > 0 ? undefined : GLOBAL_CONSTANTS.DEFAULT_MAP_ZOOM}
+						zoomControl={false}
+						mapTypeControl={false}
+						fullscreenControl={false}
+						streetViewControl={false}
+					>
 						{longitude !== false && latitude !== false && heading !== false && (
 							<Marker
 								name="Your location with heading"
@@ -129,7 +129,14 @@ LocatorGoogleMaps.defaultProps = {
 }
 
 LocatorGoogleMaps.propTypes = {
-	google: PropTypes.shape({ maps: PropTypes.shape({ SymbolPath: PropTypes.any, Point: PropTypes.any, Marker: PropTypes.any }) }).isRequired,
+	google: PropTypes.shape({
+		maps: PropTypes.shape({
+			SymbolPath: PropTypes.any,
+			Point: PropTypes.any,
+			Marker: PropTypes.any,
+			LatLngBounds: PropTypes.any,
+		}),
+	}).isRequired,
 	apiKey: PropTypes.string.isRequired,
 	longitude: PropTypes.oneOfType([PropTypes.number, PropTypes.bool]),
 	latitude: PropTypes.oneOfType([PropTypes.number, PropTypes.bool]),

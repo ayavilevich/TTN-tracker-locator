@@ -7,6 +7,7 @@ export const CONSTANTS = {
 		LATITUDE: 8.990553,
 		LONGITUDE: -79.590706,
 	},
+	DEFAULT_MAP_ZOOM: 16,
 };
 
 export default CONSTANTS;
