@@ -3,10 +3,13 @@ import styled from 'styled-components';
 import { Alert } from 'antd';
 import PropTypes from 'prop-types';
 import throttle from 'lodash.throttle';
+import LatLon from 'geodesy/latlon-spherical';
+
 import { MapValidPointsPropType } from '../../lib/PropTypes';
 
 import LocatorGoogleMaps from './LocatorGoogleMaps';
 import LocatorMapBox from './LocatorMapBox';
+import DistanceDirection from '../molecules/DistanceDirection';
 
 const CONSTANTS = {
 	THROTTLE_HEADING: 100, // 10Hz
@@ -15,11 +18,22 @@ const CONSTANTS = {
 const FullViewport = styled.div`
 	width: 100vw;
 	height: 100vh;
+	text-align: center;
 `;
 const AlertsOverlay = styled.div`
 	position: absolute;
 	left: 10vw;
 	top: 10vh;
+`;
+const DirectionOverlay = styled.div`
+	/* also try to center this with flex box */
+	position: absolute;
+	top: 90vh;
+	display: inline-block;
+	padding: 4px 15px;
+	background: #fff;
+	border: 1px solid #d9d9d9;
+	white-space: nowrap;
 `;
 
 // browser agnostic orientation
@@ -202,6 +216,23 @@ class Locator extends React.Component {
 		const { googleApiKey, mapBoxAccessToken, points } = this.props;
 		const { latitude, longitude, heading } = this.state;
 
+		// target point
+		const targetPoint = points.length > 0 ? points[points.length - 1] : false;
+
+		// distance and direction
+		let targetDistance = false;
+		let targetDirection = false;
+		// test
+		targetDistance = 340;
+		targetDirection = 20;
+		// calculate from known points
+		if (latitude !== false && longitude !== false && targetPoint) {
+			const p1 = new LatLon(latitude, longitude);
+			const p2 = new LatLon(targetPoint.latitude, targetPoint.longitude);
+			targetDistance = p1.distanceTo(p2); // defaults to meters
+			targetDirection = p1.initialBearingTo(p2); // degrees from north (0°..360°).
+		}
+
 		// console.log('render', this.props);
 
 		return (
@@ -226,6 +257,14 @@ class Locator extends React.Component {
 				)}
 				{!googleApiKey && !mapBoxAccessToken && (
 					<Alert message="No map API keys specified in Settings" type="error" />
+				)}
+				{targetDistance !== false && targetDirection !== false && (
+					<DirectionOverlay>
+						<DistanceDirection
+							distance={targetDistance}
+							direction={targetDirection}
+						/>
+					</DirectionOverlay>
 				)}
 				<AlertsOverlay>
 					{heading === false && (
