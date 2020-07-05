@@ -96,7 +96,7 @@ class LocatorMapBox extends React.Component {
 							width: '100%',
 						}}
 						center={center}
-						bearing={[-1 * (heading || 0)]}
+						bearing={[heading || 0]}
 						zoom={[16]}
 					>
 						<ScaleControl />

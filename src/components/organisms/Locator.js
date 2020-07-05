@@ -6,6 +6,7 @@ import throttle from 'lodash.throttle';
 import LatLon from 'geodesy/latlon-spherical';
 
 import { MapValidPointsPropType } from '../../lib/PropTypes';
+import GeoUtils from '../../lib/GeoUtils';
 
 import LocatorGoogleMaps from './LocatorGoogleMaps';
 import LocatorMapBox from './LocatorMapBox';
@@ -28,7 +29,7 @@ const AlertsOverlay = styled.div`
 const DirectionOverlay = styled.div`
 	/* also try to center this with flex box */
 	position: absolute;
-	top: 90vh;
+	top: 80vh;
 	display: inline-block;
 	padding: 4px 15px;
 	background: #fff;
@@ -179,8 +180,8 @@ class Locator extends React.Component {
 			positionHng.textContent = (360 - phase | 0) + "°";
 			*/
 
-			console.log('Heading', heading, adjustment, orientation, defaultOrientation);
-			this.setState({ heading: heading + adjustment });
+			console.log('Heading', heading, adjustment, orientation, defaultOrientation, -heading - adjustment);
+			this.setState({ heading: GeoUtils.normalizeHeading(-heading - adjustment) }); // the heading and adjustment so far are for where the north is, mirror to get our heading relative to north
 
 			/*
 					// apply rotation to compass rose
@@ -232,8 +233,15 @@ class Locator extends React.Component {
 			targetDistance = p1.distanceTo(p2); // defaults to meters
 			if (heading !== false) {
 				targetDirection = p1.initialBearingTo(p2); // degrees from north (0°..360°).
-				targetDirection -= heading; // correct relative to current heading
-			}
+				console.log('direction to target', { bearing: targetDirection, heading });
+				targetDirection = GeoUtils.normalizeHeading(targetDirection - heading); // correct relative to current heading
+			}/* else {
+				// test
+				const headingTmp = 90;
+				targetDirection = p1.initialBearingTo(p2); // degrees from north (0°..360°).
+				console.log('direction to target (test)', { bearing: targetDirection, headingTmp });
+				targetDirection = GeoUtils.normalizeHeading(targetDirection - headingTmp); // correct relative to current heading
+			} */
 		}
 
 		// console.log('render', this.props);
