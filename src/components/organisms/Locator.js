@@ -10,7 +10,9 @@ import GeoUtils from '../../lib/GeoUtils';
 
 import LocatorGoogleMaps from './LocatorGoogleMaps';
 import LocatorMapBox from './LocatorMapBox';
-import DistanceDirection from '../molecules/DistanceDirection';
+import DirectionBox from '../atoms/DirectionBox';
+import DistanceBox from '../atoms/DistanceBox';
+import AgeBox from '../atoms/AgeBox';
 
 const CONSTANTS = {
 	THROTTLE_HEADING: 100, // 10Hz
@@ -33,11 +35,11 @@ const NavigationBar = styled.div`
 	bottom: 2vh;
 	display: flex;
 	width: 100%;
-	flex-flow: row nowrap;
+	flex-flow: row wrap;
 	justify-content: center;
 `;
 
-const DirectionOverlay = styled.div`
+const NavigationBarItem = styled.div`
 	display: inline-block;
 	padding: 4px 15px;
 	background: #fff;
@@ -222,11 +224,29 @@ class Locator extends React.Component {
 	}
 
 	render() {
-		const { googleApiKey, mapBoxAccessToken, points } = this.props;
+		const {
+			googleApiKey, mapBoxAccessToken, points, maxPointsToRenderOnMap,
+		} = this.props;
 		const { latitude, longitude, heading } = this.state;
 
-		// target point
-		const targetPoint = points.length > 0 ? points[points.length - 1] : false;
+		// get subset of points to render on map
+		const validPoints = points.filter((point) => typeof point.latitude === 'number' && typeof point.longitude === 'number');
+		let pointsToRenderOnMap = [];
+		if (points.length) {
+			if (points.length > maxPointsToRenderOnMap) {
+				// assume sorted by time
+				// assume older entries are first
+				pointsToRenderOnMap = validPoints.slice(-maxPointsToRenderOnMap);
+			} else {
+				pointsToRenderOnMap = validPoints;
+			}
+		}
+		console.log('points for map', points.length, validPoints.length, pointsToRenderOnMap.length);
+
+		// target point (last known target position)
+		// assume points are sorted with oldest first
+		const targetPoint = pointsToRenderOnMap.length > 0 ? pointsToRenderOnMap[pointsToRenderOnMap.length - 1] : false;
+		const lastUpdatePoint = points.length > 0 ? points[points.length - 1] : false;
 
 		// distance and direction
 		let targetDistance = false;
@@ -262,7 +282,7 @@ class Locator extends React.Component {
 						latitude={latitude}
 						longitude={longitude}
 						heading={heading}
-						points={points}
+						points={pointsToRenderOnMap}
 					/>
 				)}
 				{!mapBoxAccessToken && googleApiKey && (
@@ -271,7 +291,7 @@ class Locator extends React.Component {
 						latitude={latitude}
 						longitude={longitude}
 						heading={heading}
-						points={points}
+						points={pointsToRenderOnMap}
 					/>
 				)}
 				{!googleApiKey && !mapBoxAccessToken && (
@@ -279,12 +299,24 @@ class Locator extends React.Component {
 				)}
 				<NavigationBar>
 					{targetDistance !== false && (
-						<DirectionOverlay>
-							<DistanceDirection
-								distance={targetDistance}
-								direction={targetDirection}
-							/>
-						</DirectionOverlay>
+						<>
+							<NavigationBarItem>
+								<DistanceBox
+									distance={targetDistance}
+								/>
+							</NavigationBarItem>
+							<NavigationBarItem>
+								<DirectionBox
+									direction={targetDirection}
+								/>
+							</NavigationBarItem>
+							<NavigationBarItem>
+								<AgeBox
+									lastUpdateTime={lastUpdatePoint.time}
+									hasFix={lastUpdatePoint.latitude !== false && lastUpdatePoint.longitude !== false}
+								/>
+							</NavigationBarItem>
+						</>
 					)}
 				</NavigationBar>
 				<AlertsOverlay>
@@ -312,6 +344,7 @@ Locator.propTypes = {
 	mapBoxAccessToken: PropTypes.string,
 	googleApiKey: PropTypes.string,
 	points: MapValidPointsPropType.isRequired,
+	maxPointsToRenderOnMap: PropTypes.number.isRequired,
 };
 
 export default Locator;

@@ -24,7 +24,7 @@ const AppContainer = styled.div`
 	font-size: calc(10px + 2vmin);
 	color: white;
 `;
-const Navigation = styled.nav`
+const CommandsBar = styled.nav`
 	text-align: center;
 	position: absolute;
 	z-index: 100;
@@ -206,23 +206,9 @@ class App extends React.Component {
 			maxPointsToRenderOnMap,
 		} = this.state;
 
-		// get subset of points
-		const validPoints = points.filter((point) => typeof point.latitude === 'number' && typeof point.longitude === 'number');
-		let pointsToRenderOnMap = [];
-		if (points.length) {
-			if (points.length > maxPointsToRenderOnMap) {
-				// assume sorted by time
-				// assume older entries are first
-				pointsToRenderOnMap = validPoints.slice(-maxPointsToRenderOnMap);
-			} else {
-				pointsToRenderOnMap = validPoints;
-			}
-		}
-		console.log('points for map', points.length, validPoints.length, pointsToRenderOnMap.length);
-
 		return (
 			<AppContainer>
-				<Navigation>
+				<CommandsBar>
 					<Button loading={loadingData} onClick={this.handleLoadData} icon={<ReloadOutlined />}>Reload data</Button>
 
 					<Popover
@@ -265,11 +251,12 @@ class App extends React.Component {
 					>
 						<Button icon={<SettingOutlined />}>Settings</Button>
 					</Popover>
-				</Navigation>
+				</CommandsBar>
 				<Locator
 					googleApiKey={googleApiKey}
 					mapBoxAccessToken={mapBoxAccessToken}
-					points={pointsToRenderOnMap}
+					points={points}
+					maxPointsToRenderOnMap={maxPointsToRenderOnMap}
 				/>
 			</AppContainer>
 		);
