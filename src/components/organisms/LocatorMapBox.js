@@ -84,6 +84,7 @@ class LocatorMapBox extends React.Component {
 		// https://github.com/alex3165/react-mapbox-gl/issues/812
 		this.MapBox = ReactMapboxGl({
 			accessToken,
+			interactive: false,
 		});
 		this.accessToken = accessToken; // store token of the MaxBox instance
 		console.log('componentDidMount', this.props, this.MapBox);

@@ -21,7 +21,9 @@ const CONSTANTS = {
 
 // form wouldn't grow the parent on its own
 const WideForm = styled(Form)`
-	width: 45em;
+	@media (min-width: 576px) {
+		width: 45em;
+	}
 `;
 
 const mustBeSetIfDataSourceIsTtn = ({ getFieldValue }) => ({
@@ -199,7 +201,7 @@ class Settings extends React.Component {
 						<InputNumber min={1} max={100} />
 					</Form.Item>
 
-					<Form.Item wrapperCol={{ offset: 12, span: 12 }}>
+					<Form.Item wrapperCol={{ sm: { offset: 12, span: 12 }, xs: { offset: 0, span: 12 } }}>
 						<>
 							<Button type="primary" htmlType="submit">
 								Save

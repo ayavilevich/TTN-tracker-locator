@@ -60,6 +60,10 @@ class LocatorGoogleMaps extends React.Component {
 						mapTypeControl={false}
 						fullscreenControl={false}
 						streetViewControl={false}
+						scrollwheel={false}
+						draggable={false}
+						keyboardShortcuts={false}
+						disableDoubleClickZoom
 					>
 						{longitude !== false && latitude !== false && heading !== false && (
 							<Marker
