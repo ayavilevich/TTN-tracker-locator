@@ -1,5 +1,6 @@
 import React from 'react';
-import { Table } from 'antd';
+import { Table, Tooltip } from 'antd';
+import { EnvironmentOutlined } from '@ant-design/icons';
 // import PropTypes from 'prop-types';
 import { PointsPropType } from '../../lib/PropTypes';
 
@@ -49,7 +50,15 @@ const columns = [
 		title: 'Map',
 		key: 'actions',
 		render: (text, record) => (
-			<a target="_blank" rel="noopener noreferrer" href={`http://maps.google.com/maps?z=15&q=loc:${record.latitude}+${record.longitude}`}>Open in Google maps</a>
+			<>
+				{record.latitude && record.longitude && (
+					<Tooltip title="Open in Google maps">
+						<a target="_blank" rel="noopener noreferrer" href={`http://maps.google.com/maps?z=15&q=loc:${record.latitude}+${record.longitude}`}>
+							<EnvironmentOutlined />
+						</a>
+					</Tooltip>
+				)}
+			</>
 		),
 	},
 ];
