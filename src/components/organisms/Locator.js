@@ -5,7 +5,7 @@ import PropTypes from 'prop-types';
 import throttle from 'lodash.throttle';
 import LatLon from 'geodesy/latlon-spherical';
 
-import { MapValidPointsPropType } from '../../lib/PropTypes';
+import { PointsPropType } from '../../lib/PropTypes';
 import GeoUtils from '../../lib/GeoUtils';
 
 import LocatorGoogleMaps from './LocatorGoogleMaps';
@@ -241,7 +241,7 @@ class Locator extends React.Component {
 				pointsToRenderOnMap = validPoints;
 			}
 		}
-		console.log('points for map', points.length, validPoints.length, pointsToRenderOnMap.length);
+		// console.log('points for map', points.length, validPoints.length, pointsToRenderOnMap.length);
 
 		// target point (last known target position)
 		// assume points are sorted with oldest first
@@ -343,7 +343,7 @@ Locator.defaultProps = {
 Locator.propTypes = {
 	mapBoxAccessToken: PropTypes.string,
 	googleApiKey: PropTypes.string,
-	points: MapValidPointsPropType.isRequired,
+	points: PointsPropType.isRequired,
 	maxPointsToRenderOnMap: PropTypes.number.isRequired,
 };
 

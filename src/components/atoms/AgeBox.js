@@ -4,8 +4,8 @@ import { Statistic } from 'antd';
 import {
 	CheckOutlined, CloseOutlined,
 } from '@ant-design/icons';
-import moment from 'moment';
-import momentDurationFormatSetup from 'moment-duration-format';
+import moment from 'moment'; // https://momentjs.com/docs/#/durations/
+import momentDurationFormatSetup from 'moment-duration-format'; // https://github.com/jsmreese/moment-duration-format
 import PropTypes from 'prop-types';
 
 momentDurationFormatSetup(moment);
@@ -53,7 +53,7 @@ class AgeBox extends React.Component {
 
 		return (
 			<Statistic
-				title="Time since update"
+				title="Age of target position"
 				value={value}
 				prefix={icon}
 			/>

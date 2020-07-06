@@ -63,6 +63,11 @@ class App extends React.Component {
 		};
 	}
 
+	componentDidMount() {
+		// initial load
+		this.handleLoadData();
+	}
+
 	handleSettingsFinish = (values) => {
 		const { googleApiKey } = this.state;
 

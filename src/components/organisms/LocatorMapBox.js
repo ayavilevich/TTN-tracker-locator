@@ -151,6 +151,7 @@ class LocatorMapBox extends React.Component {
 						center={center}
 						bearing={[heading || 0]}
 						zoom={[zoom]}
+						movingMethod="jumpTo" // try "flyTo" with flyToOptions instead? https://docs.mapbox.com/mapbox-gl-js/api/map/#map#flyto
 					>
 						<MapContext.Consumer>
 							{(map) => {
