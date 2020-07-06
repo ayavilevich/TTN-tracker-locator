@@ -20,6 +20,8 @@ const CONSTANTS = {
 };
 
 // form wouldn't grow the parent on its own
+// add growth if there is width (not mobile portrait)
+// reference: https://getbootstrap.com/docs/4.0/layout/overview/#responsive-breakpoints
 const WideForm = styled(Form)`
 	@media (min-width: 576px) {
 		width: 45em;
