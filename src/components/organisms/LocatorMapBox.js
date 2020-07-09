@@ -9,7 +9,7 @@ import ReactMapboxGl, {
 	ZoomControl,
 	RotationControl,
 	*/
-} from 'react-mapbox-gl';
+} from 'react-mapbox-gl'; // https://github.com/alex3165/react-mapbox-gl/blob/HEAD/docs/API.md
 import * as MapboxGl from 'mapbox-gl';
 import { MapValidPointsPropType } from '../../lib/PropTypes';
 import GLOBAL_CONSTANTS from '../../lib/Constants';
