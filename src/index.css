@@ -11,3 +11,8 @@ code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
     monospace;
 }
+
+/* fix icon inside of an icon wrapper issue */
+.anticon .svg-inline--fa {
+  vertical-align: 0;
+}

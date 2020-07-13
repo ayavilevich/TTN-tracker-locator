@@ -1,12 +1,10 @@
 import React from 'react';
 // import styled from 'styled-components';
 import { Statistic } from 'antd';
-import {
-	CheckOutlined, CloseOutlined,
-} from '@ant-design/icons';
 import moment from 'moment'; // https://momentjs.com/docs/#/durations/
 import momentDurationFormatSetup from 'moment-duration-format'; // https://github.com/jsmreese/moment-duration-format
 import PropTypes from 'prop-types';
+import { LocationFixIcon, LocationNoFixIcon } from './Icons';
 
 momentDurationFormatSetup(moment);
 
@@ -47,7 +45,7 @@ class AgeBox extends React.Component {
 
 		// format
 		const value = age.format();
-		const icon = hasFix ? (<CheckOutlined />) : (<CloseOutlined />);
+		const icon = hasFix ? (<LocationFixIcon />) : (<LocationNoFixIcon />);
 
 		// TODO: state, timer, render diff
 

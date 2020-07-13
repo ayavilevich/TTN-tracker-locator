@@ -2,8 +2,8 @@ import React from 'react';
 import styled from 'styled-components';
 import { Button, Popover, notification } from 'antd';
 import 'antd/dist/antd.css';
-import { ReloadOutlined, SettingOutlined, DashboardOutlined } from '@ant-design/icons';
-import { HashGet } from 'hashget'
+import { HashGet } from 'hashget';
+import { DataIcon, ReloadIcon, SettingsIcon } from './components/atoms/Icons';
 
 import Locator from './components/organisms/Locator';
 import Settings from './components/organisms/Settings';
@@ -214,7 +214,7 @@ class App extends React.Component {
 		return (
 			<AppContainer>
 				<CommandsBar>
-					<Button loading={loadingData} onClick={this.handleLoadData} icon={<ReloadOutlined />}>Reload data</Button>
+					<Button loading={loadingData} onClick={this.handleLoadData} icon={<ReloadIcon />}>Reload data</Button>
 
 					<Popover
 						placement="bottom"
@@ -228,7 +228,7 @@ class App extends React.Component {
 						trigger="click"
 						onVisibleChange={(visible) => { this.setState({ pointsTableVisible: visible }); }}
 					>
-						<Button icon={<DashboardOutlined />}>Data</Button>
+						<Button icon={<DataIcon />}>Data</Button>
 					</Popover>
 
 					<Popover
@@ -254,7 +254,7 @@ class App extends React.Component {
 						trigger="click"
 						onVisibleChange={() => { this.setState({ settingsVisible: true /* Force closing with save or cancel causing onFinish */ }) }}
 					>
-						<Button icon={<SettingOutlined />}>Settings</Button>
+						<Button icon={<SettingsIcon />}>Settings</Button>
 					</Popover>
 				</CommandsBar>
 				<Locator

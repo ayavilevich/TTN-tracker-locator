@@ -4,9 +4,9 @@ import PropTypes from 'prop-types';
 import {
 	Tooltip,
 } from 'antd';
-import { InfoCircleOutlined } from '@ant-design/icons';
+import { InfoIcon } from '../atoms/Icons';
 
-const IconWithSpacing = styled(InfoCircleOutlined)`
+const IconWithSpacing = styled(InfoIcon)`
 	margin: 0.3em;
 `;
 

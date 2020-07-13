@@ -1,10 +1,10 @@
 import React from 'react';
 // import styled from 'styled-components';
 import { Statistic } from 'antd';
-import {
-	ArrowUpOutlined, ArrowLeftOutlined, ArrowRightOutlined, QuestionOutlined,
-} from '@ant-design/icons';
 import PropTypes from 'prop-types';
+import {
+	DirectionForwardIcon, DirectionLeftIcon, DirectionRightIcon, DirectionUnknownIcon,
+} from './Icons';
 
 // eslint-disable-next-line react/prefer-stateless-function
 class DirectionBox extends React.Component {
@@ -19,15 +19,15 @@ class DirectionBox extends React.Component {
 
 		// format direction with units
 		let directionValue = '-';
-		let directionIcon = (<QuestionOutlined />);
+		let directionIcon = (<DirectionUnknownIcon />);
 		if (direction !== false) {
 			directionValue = direction > 180 ? direction - 360 : direction;
-			directionIcon = (<ArrowUpOutlined />);
+			directionIcon = (<DirectionForwardIcon />);
 			if (directionValue < -45) {
-				directionIcon = (<ArrowLeftOutlined />);
+				directionIcon = (<DirectionLeftIcon />);
 			}
 			if (directionValue > 45) {
-				directionIcon = (<ArrowRightOutlined />);
+				directionIcon = (<DirectionRightIcon />);
 			}
 		}
 

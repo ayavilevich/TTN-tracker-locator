@@ -1,10 +1,10 @@
 import React from 'react';
 // import styled from 'styled-components';
 import { Statistic } from 'antd';
-import {
-	EyeOutlined, CarOutlined, RocketOutlined,
-} from '@ant-design/icons';
 import PropTypes from 'prop-types';
+import {
+	DistanceSightIcon, DistanceWalkIcon, DistanceDriveIcon, DistanceFlyIcon,
+} from './Icons';
 
 // eslint-disable-next-line react/prefer-stateless-function
 class DistanceBox extends React.Component {
@@ -20,12 +20,15 @@ class DistanceBox extends React.Component {
 		// format distance with units
 		let distanceValue = distance;
 		let distanceUnit = 'm';
-		let distanceIcon = (<EyeOutlined />);
-		if (distance > 200) {
-			distanceIcon = (<CarOutlined />);
+		let distanceIcon = (<DistanceSightIcon />);
+		if (distance > 100) {
+			distanceIcon = (<DistanceWalkIcon />);
+		}
+		if (distance > 1000) {
+			distanceIcon = (<DistanceDriveIcon />);
 		}
 		if (distance > 200000) {
-			distanceIcon = (<RocketOutlined />);
+			distanceIcon = (<DistanceFlyIcon />);
 		}
 		if (distance > 500) { // after 500m convert to km
 			distanceValue /= 1000;

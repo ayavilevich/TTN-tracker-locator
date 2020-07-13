@@ -1,8 +1,8 @@
 import React from 'react';
 import { Table, Tooltip } from 'antd';
-import { EnvironmentOutlined } from '@ant-design/icons';
 // import PropTypes from 'prop-types';
 import { PointsPropType } from '../../lib/PropTypes';
+import { MapLinkIcon } from '../atoms/Icons';
 
 const columns = [
 	{
@@ -54,7 +54,7 @@ const columns = [
 				{record.latitude && record.longitude && (
 					<Tooltip title="Open in Google maps">
 						<a target="_blank" rel="noopener noreferrer" href={`http://maps.google.com/maps?z=15&q=loc:${record.latitude}+${record.longitude}`}>
-							<EnvironmentOutlined />
+							<MapLinkIcon />
 						</a>
 					</Tooltip>
 				)}
