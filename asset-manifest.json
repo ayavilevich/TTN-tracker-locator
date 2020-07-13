@@ -1,0 +1,25 @@
+{
+  "files": {
+    "main.css": "/TTN-tracker-locator/static/css/main.83e25eec.chunk.css",
+    "main.js": "/TTN-tracker-locator/static/js/main.9a22702d.chunk.js",
+    "main.js.map": "/TTN-tracker-locator/static/js/main.9a22702d.chunk.js.map",
+    "runtime-main.js": "/TTN-tracker-locator/static/js/runtime-main.60960bef.js",
+    "runtime-main.js.map": "/TTN-tracker-locator/static/js/runtime-main.60960bef.js.map",
+    "static/css/2.ca370650.chunk.css": "/TTN-tracker-locator/static/css/2.ca370650.chunk.css",
+    "static/js/2.21e77d74.chunk.js": "/TTN-tracker-locator/static/js/2.21e77d74.chunk.js",
+    "static/js/2.21e77d74.chunk.js.map": "/TTN-tracker-locator/static/js/2.21e77d74.chunk.js.map",
+    "index.html": "/TTN-tracker-locator/index.html",
+    "precache-manifest.287b71172db98fb97ef5eb6981dc58ef.js": "/TTN-tracker-locator/precache-manifest.287b71172db98fb97ef5eb6981dc58ef.js",
+    "service-worker.js": "/TTN-tracker-locator/service-worker.js",
+    "static/css/2.ca370650.chunk.css.map": "/TTN-tracker-locator/static/css/2.ca370650.chunk.css.map",
+    "static/css/main.83e25eec.chunk.css.map": "/TTN-tracker-locator/static/css/main.83e25eec.chunk.css.map",
+    "static/js/2.21e77d74.chunk.js.LICENSE.txt": "/TTN-tracker-locator/static/js/2.21e77d74.chunk.js.LICENSE.txt"
+  },
+  "entrypoints": [
+    "static/js/runtime-main.60960bef.js",
+    "static/css/2.ca370650.chunk.css",
+    "static/js/2.21e77d74.chunk.js",
+    "static/css/main.83e25eec.chunk.css",
+    "static/js/main.9a22702d.chunk.js"
+  ]
+}
