@@ -32,7 +32,7 @@
     "test": "react-scripts test",
     "eject": "react-scripts eject",
     "lint": "eslint -- ./src/.",
-    "predeploy": "npm run build",
+    "predeploy": "env-cmd -f github.io.env npm run build",
     "deploy": "gh-pages -d build"
   },
   "_eslintConfig": {
@@ -55,6 +55,8 @@
     "https://medium.com/mobile-web-dev/how-to-build-and-deploy-a-react-app-to-github-pages-in-less-than-5-minutes-d6c4ffd30f14"
   ],
   "devDependencies": {
+    "cross-env": "^7.0.2",
+    "env-cmd": "^10.1.0",
     "eslint-config-airbnb": "^18.2.0",
     "eslint-config-prettier": "^6.11.0",
     "eslint-plugin-jsx-a11y": "^6.3.1",

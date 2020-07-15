@@ -13,6 +13,9 @@ import GLOBAL_CONSTANTS from './lib/Constants';
 import PayloadProcessing from './lib/PayloadProcessing';
 // import './App.css';
 
+// log start
+console.log(process.env.NODE_ENV, process.env);
+
 const CONSTANTS = {
 	SETTINGS_HASH_PARAM: 'settings',
 };
@@ -51,13 +54,13 @@ class App extends React.Component {
 			points: [],
 			// persistent settings
 			googleApiKey: SettingsProvider.getGoogleApiKey(),
-			mapBoxAccessToken: SettingsProvider.getMapBoxAccessToken(),
+			mapBoxAccessToken: SettingsProvider.getMapBoxAccessToken() || process.env.REACT_APP_DEFAULT_MAP_BOX_ACCESS_TOKEN,
 			dataSource: SettingsProvider.getDataSource(),
 			customDataUrl: SettingsProvider.getCustomDataUrl(),
 			ttnApplicationId: SettingsProvider.getTtnApplicationId(),
 			ttnDeviceId: SettingsProvider.getTtnDeviceId(),
 			ttnAccessKey: SettingsProvider.getTtnAccessKey(),
-			ttnCorsProxyUrl: SettingsProvider.getTtnCorsProxyUrl(),
+			ttnCorsProxyUrl: SettingsProvider.getTtnCorsProxyUrl() || process.env.REACT_APP_DEFAULT_TTN_CORS_PROXY_URL,
 			ttnQueryLast: SettingsProvider.getTtnQueryLast(),
 			maxPointsToRenderOnMap: maxPointsToRenderOnMap !== undefined ? parseInt(maxPointsToRenderOnMap, 10) : maxPointsToRenderOnMap,
 		};
