@@ -1,5 +1,6 @@
 {
   "name": "ttn-tracker-locator",
+  "homepage": "https://ayavilevich.github.io/TTN-tracker-locator/",
   "version": "0.1.0",
   "private": true,
   "dependencies": {
@@ -30,7 +31,9 @@
     "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
-    "lint": "eslint -- ./src/."
+    "lint": "eslint -- ./src/.",
+    "predeploy": "npm run build",
+    "deploy": "gh-pages -d build"
   },
   "_eslintConfig": {
     "extends": "_react-app"
@@ -48,13 +51,15 @@
     ]
   },
   "//": [
-    "https://medium.com/@pppped/extend-create-react-app-with-airbnbs-eslint-config-prettier-flow-and-react-testing-library-96627e9a9672"
+    "https://medium.com/@pppped/extend-create-react-app-with-airbnbs-eslint-config-prettier-flow-and-react-testing-library-96627e9a9672",
+    "https://medium.com/mobile-web-dev/how-to-build-and-deploy-a-react-app-to-github-pages-in-less-than-5-minutes-d6c4ffd30f14"
   ],
   "devDependencies": {
     "eslint-config-airbnb": "^18.2.0",
     "eslint-config-prettier": "^6.11.0",
     "eslint-plugin-jsx-a11y": "^6.3.1",
     "eslint-plugin-prettier": "^3.1.4",
+    "gh-pages": "^3.1.0",
     "prettier": "^2.0.5"
   }
 }
