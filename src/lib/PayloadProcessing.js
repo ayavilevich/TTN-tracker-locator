@@ -27,7 +27,9 @@ const lppGpsRegexp = /^map\[(.*)\]$/;
 
 class PayloadProcessing {
 	static preProcessSample(sample) {
-		let { latitude, longitude, altitude } = sample;
+		let altitude = sample.altitude || sample.Altitude;
+		let latitude = sample.latitude || sample.Latitude;
+		let longitude = sample.longitude || sample.Longitude;
 		const {
 			gps_20, device_id, hdop, sats, // eslint-disable-line camelcase
 		} = sample;
