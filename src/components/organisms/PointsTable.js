@@ -74,7 +74,7 @@ class PointsTable extends React.Component {
 		const { points } = this.props;
 
 		return (
-			<Table dataSource={points} columns={columns} />
+			<Table dataSource={points} columns={columns} rowKey="time" />
 		);
 	}
 }
