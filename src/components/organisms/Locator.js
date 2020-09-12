@@ -212,7 +212,7 @@ class Locator extends React.Component {
 
 	// location (based on https://github.com/lamplightdev/compass)
 	handleLocationUpdate = (position) => {
-		console.log('pos', position.coords); // can also have heading, accuracy and speed but not all browser provide that
+		// console.log('pos', position.coords); // can also have heading, accuracy and speed but not all browser provide that
 		const { latitude, longitude } = position.coords;
 		this.setState({ latitude, longitude });
 	}
