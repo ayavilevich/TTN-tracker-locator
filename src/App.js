@@ -71,6 +71,17 @@ class App extends React.Component {
 		this.handleLoadData();
 	}
 
+	componentDidUpdate(prevProps, prevState) {
+		const {
+			dataSource, customDataUrl, ttnApplicationId, ttnDeviceId, ttnAccessKey, ttnCorsProxyUrl, ttnQueryLast,
+		} = this.state;
+		// check if we need to reload the data
+		if (prevState.dataSource !== dataSource || prevState.customDataUrl !== customDataUrl || prevState.ttnApplicationId !== ttnApplicationId
+			|| prevState.ttnDeviceId !== ttnDeviceId || prevState.ttnAccessKey !== ttnAccessKey || prevState.ttnCorsProxyUrl !== ttnCorsProxyUrl || prevState.ttnQueryLast !== ttnQueryLast) {
+			this.handleLoadData();
+		}
+	}
+
 	handleSettingsFinish = (values) => {
 		const { googleApiKey } = this.state;
 
