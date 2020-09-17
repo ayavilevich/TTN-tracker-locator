@@ -27,9 +27,29 @@ const lppGpsRegexp = /^map\[(.*)\]$/;
 
 class PayloadProcessing {
 	static preProcessSample(sample) {
-		let altitude = sample.altitude || sample.Altitude;
-		let latitude = sample.latitude || sample.Latitude;
-		let longitude = sample.longitude || sample.Longitude;
+		let altitude;
+		let latitude;
+		let longitude;
+		// extract and validate position
+		if (typeof sample.altitude === 'number') {
+			altitude = sample.altitude;
+		}
+		if (typeof sample.Altitude === 'number') {
+			altitude = sample.Altitude;
+		}
+		if (typeof sample.latitude === 'number' && sample.latitude !== 0) { // we are not likely to be in the ocean exactly at 0,0 . this is probably lack of fix.
+			latitude = sample.latitude;
+		}
+		if (typeof sample.Latitude === 'number' && sample.Latitude !== 0) { // we are not likely to be in the ocean exactly at 0,0 . this is probably lack of fix.
+			latitude = sample.Latitude;
+		}
+		if (typeof sample.longitude === 'number' && sample.longitude !== 0) { // we are not likely to be in the ocean exactly at 0,0 . this is probably lack of fix.
+			longitude = sample.longitude;
+		}
+		if (typeof sample.Longitude === 'number' && sample.Longitude !== 0) { // we are not likely to be in the ocean exactly at 0,0 . this is probably lack of fix.
+			longitude = sample.Longitude;
+		}
+		// extract misc
 		const {
 			gps_20, device_id, hdop, sats, // eslint-disable-line camelcase
 		} = sample;
