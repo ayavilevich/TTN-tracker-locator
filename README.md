@@ -1,8 +1,23 @@
 # TTN Tracker Locator
 
-Work in progress.
+This is an HTML5 app that shows you in real-time where a GPS tracker is located relative to your location. The information about the tracker is pulled from TTN (The Things Network) LoRaWan system.
 
-This is an HTML5 app that shows you where a GPS tracker is located relative to your location. The information about the tracker is pulled form the TTN (The Things Network) LoRaWan system.
+This takes into consideration your own location and heading as opposed to alternatives which show the tracker's absolute position on a map. Mostly useful when the target is at a distance of a few hundred meters (~600ft).
+
+Work in progress. Looking to get contributions and feedback.
+
+## Known issues
+
+On Firefox there is no compass data (your heading if fixed) - workaround, use Chrome  
+If using Google map as map provider, map is not rotating - limitation of Google Maps - workaround, use MapBox  
+On Chrome and using Google map as map provider, markers are flashing - workaround, use MapBox  
+
+All kinds of visual glitches and UX difficulties, especially on mobile devices.
+
+## TODO
+
+Auto reload data  
+Add support for several trackers at once.  
 
 # React generator notes
 
