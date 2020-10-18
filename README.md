@@ -6,6 +6,21 @@ This takes into consideration your own location and heading as opposed to altern
 
 Work in progress. Looking to get contributions and feedback.
 
+## Usage instructions
+
+You need to have a working LoRa tracker (such as LGT-92 or something DIY such as a TTGO T-BEAM running ESP32-Paxcounter).  
+The tracker has to report to a TTN application.  
+You need to have Latitude and Longitude information properly parsed in the payload.  
+You need to enable “Data Storage” integration for the application.  
+Next go to https://ayavilevich.github.io/TTN-tracker-locator/  
+In “settings”, provide the relevant TTN application id, TTN device id and a TTN access token.  
+Best practice would be to create a dedicated access token for this use. The settings are stored locally in the browser. This app has no back-end of its own.  
+Adjust other optional properties in “settings”, save and reload data in the main screen.  
+
+If everything is working you would get the recent path of the tracker relative to your position and orientation. If something doesn’t work, troubleshoot in the “data” screen or using TTN console. If you want to report an issue please do so in the repository.
+
+The https://ayavilevich.github.io/TTN-tracker-locator/ is a build that I host, pre-configured with a matching CORS proxy and a MapBox access token so you don't need to get your own. If you want to host your own version make sure to supply these resources on your own.
+
 ## Known issues
 
 On Firefox there is no compass data (your heading if fixed) - workaround, use Chrome  
