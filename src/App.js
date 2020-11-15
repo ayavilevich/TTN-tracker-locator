@@ -17,7 +17,11 @@ import PayloadProcessing from './lib/PayloadProcessing';
 console.log(process.env.NODE_ENV, process.env);
 
 const CONSTANTS = {
-	SETTINGS_HASH_PARAM: 'settings',
+	HASH_PARAMS: {
+		SETTINGS: 'settings',
+		DEMO_LATITUDE_OFFSET: 'demo_lat',
+		DEMO_LONGITUDE_OFFSET: 'demo_long',
+	},
 };
 
 const AppContainer = styled.div`
@@ -37,10 +41,19 @@ const CommandsBar = styled.nav`
 class App extends React.Component {
 	constructor(props) {
 		super(props);
-		// see if need to load persistent settings from url
 		const hashParser = new HashGet();
-		if (hashParser.has(CONSTANTS.SETTINGS_HASH_PARAM)) {
-			const serializedSettings = hashParser.getValue(CONSTANTS.SETTINGS_HASH_PARAM);
+		// see if need to load some non-persistent settings from url (test, demo, etc)
+		let demoLatitudeOffset = 0;
+		let demoLongitudeOffset = 0;
+		if (hashParser.has(CONSTANTS.HASH_PARAMS.DEMO_LATITUDE_OFFSET)) {
+			demoLatitudeOffset = parseFloat(hashParser.getValue(CONSTANTS.HASH_PARAMS.DEMO_LATITUDE_OFFSET), 10);
+		}
+		if (hashParser.has(CONSTANTS.HASH_PARAMS.DEMO_LONGITUDE_OFFSET)) {
+			demoLongitudeOffset = parseFloat(hashParser.getValue(CONSTANTS.HASH_PARAMS.DEMO_LONGITUDE_OFFSET), 10);
+		}
+		// see if need to load persistent settings from url
+		if (hashParser.has(CONSTANTS.HASH_PARAMS.SETTINGS)) {
+			const serializedSettings = hashParser.getValue(CONSTANTS.HASH_PARAMS.SETTINGS);
 			console.log('loading settings from hash', serializedSettings);
 			SettingsProvider.deserialize(decodeURIComponent(serializedSettings));
 		}
@@ -52,6 +65,9 @@ class App extends React.Component {
 			settingsVisible: false,
 			pointsTableVisible: false,
 			points: [],
+			// non persistent settings
+			demoLatitudeOffset,
+			demoLongitudeOffset,
 			// persistent settings
 			googleApiKey: SettingsProvider.getGoogleApiKey(),
 			mapBoxAccessToken: SettingsProvider.getMapBoxAccessToken() || process.env.REACT_APP_DEFAULT_MAP_BOX_ACCESS_TOKEN,
@@ -223,6 +239,7 @@ class App extends React.Component {
 			googleApiKey, mapBoxAccessToken,
 			dataSource, customDataUrl, ttnApplicationId, ttnDeviceId, ttnAccessKey, ttnCorsProxyUrl, ttnQueryLast,
 			maxPointsToRenderOnMap,
+			demoLatitudeOffset, demoLongitudeOffset,
 		} = this.state;
 
 		return (
@@ -252,7 +269,7 @@ class App extends React.Component {
 						content={(
 							<Settings
 								onFinish={this.handleSettingsFinish}
-								serializedSettings={`${CONSTANTS.SETTINGS_HASH_PARAM}=${encodeURIComponent(SettingsProvider.serialize())}`}
+								serializedSettings={`${CONSTANTS.HASH_PARAMS.SETTINGS}=${encodeURIComponent(SettingsProvider.serialize())}`}
 								googleApiKey={googleApiKey}
 								mapBoxAccessToken={mapBoxAccessToken}
 								dataSource={dataSource}
@@ -276,6 +293,8 @@ class App extends React.Component {
 					mapBoxAccessToken={mapBoxAccessToken}
 					points={points}
 					maxPointsToRenderOnMap={maxPointsToRenderOnMap}
+					demoLatitudeOffset={demoLatitudeOffset}
+					demoLongitudeOffset={demoLongitudeOffset}
 				/>
 			</AppContainer>
 		);

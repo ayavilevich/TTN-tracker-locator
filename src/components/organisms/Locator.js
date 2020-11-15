@@ -226,6 +226,7 @@ class Locator extends React.Component {
 	render() {
 		const {
 			googleApiKey, mapBoxAccessToken, points, maxPointsToRenderOnMap,
+			demoLatitudeOffset, demoLongitudeOffset,
 		} = this.props;
 		const { latitude, longitude, heading } = this.state;
 
@@ -245,8 +246,16 @@ class Locator extends React.Component {
 
 		// target point (last known target position)
 		// assume points are sorted with oldest first
-		const targetPoint = pointsToRenderOnMap.length > 0 ? pointsToRenderOnMap[pointsToRenderOnMap.length - 1] : false;
+		const targetPoint = pointsToRenderOnMap.length > 0 ? ({ ...pointsToRenderOnMap[pointsToRenderOnMap.length - 1] }) : false;
 		const lastUpdatePoint = points.length > 0 ? points[points.length - 1] : false;
+
+		// apply demo offset to pointsToRenderOnMap. normally changes nothing
+		pointsToRenderOnMap = pointsToRenderOnMap.map((point) => {
+			const newPoint = { ...point }; // clone
+			newPoint.latitude += demoLatitudeOffset;
+			newPoint.longitude += demoLongitudeOffset;
+			return newPoint;
+		});
 
 		// distance and direction
 		let targetDistance = false;
@@ -279,8 +288,8 @@ class Locator extends React.Component {
 				{mapBoxAccessToken && (
 					<LocatorMapBox
 						accessToken={mapBoxAccessToken}
-						latitude={latitude}
-						longitude={longitude}
+						latitude={latitude + demoLatitudeOffset}
+						longitude={longitude + demoLongitudeOffset}
 						heading={heading}
 						points={pointsToRenderOnMap}
 					/>
@@ -288,8 +297,8 @@ class Locator extends React.Component {
 				{!mapBoxAccessToken && googleApiKey && (
 					<LocatorGoogleMaps
 						apiKey={googleApiKey}
-						latitude={latitude}
-						longitude={longitude}
+						latitude={latitude + demoLatitudeOffset}
+						longitude={longitude + demoLongitudeOffset}
 						heading={heading}
 						points={pointsToRenderOnMap}
 					/>
@@ -338,6 +347,8 @@ class Locator extends React.Component {
 Locator.defaultProps = {
 	mapBoxAccessToken: '',
 	googleApiKey: '',
+	demoLatitudeOffset: 0,
+	demoLongitudeOffset: 0,
 }
 
 Locator.propTypes = {
@@ -345,6 +356,8 @@ Locator.propTypes = {
 	googleApiKey: PropTypes.string,
 	points: PointsPropType.isRequired,
 	maxPointsToRenderOnMap: PropTypes.number.isRequired,
+	demoLatitudeOffset: PropTypes.number,
+	demoLongitudeOffset: PropTypes.number,
 };
 
 export default Locator;
