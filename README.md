@@ -6,6 +6,8 @@ This takes into consideration your own location and heading as opposed to altern
 
 Work in progress. Looking to get contributions and feedback.
 
+![screenshot](https://blog.yavilevich.com/wp-content/uploads/2020/12/TTT-tracker-screenshot-join-scale.png)
+
 ## Usage instructions
 
 You need to have a working LoRa tracker (such as LGT-92 or something DIY such as a TTGO T-BEAM running ESP32-Paxcounter).  
